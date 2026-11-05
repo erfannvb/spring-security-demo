@@ -8,7 +8,7 @@ public class WelcomeController {
 
     @GetMapping(path = "/welcome")
     public String welcome() {
-        return "Welcome to the Spring App without security!";
+        return "Welcome to the Spring App including security!";
     }
 
 }
