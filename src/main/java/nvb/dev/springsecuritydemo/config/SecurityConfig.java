@@ -4,6 +4,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -20,6 +26,28 @@ public class SecurityConfig {
         http.formLogin(Customizer.withDefaults());
         http.httpBasic(Customizer.withDefaults());
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails adminUser = User
+                .withUsername("admin")
+                .password("{bcrypt}$2a$12$py9GQUK6FsO7lQO9c4Fp6efFfNY4swoFNBpO1H3eIfx3kZa2l.4Ee")
+                .authorities("admin")
+                .build();
+
+        UserDetails normalUser = User
+                .withUsername("user")
+                .password("753357")
+                .authorities("read")
+                .build();
+
+        return new InMemoryUserDetailsManager(adminUser, normalUser);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 }
