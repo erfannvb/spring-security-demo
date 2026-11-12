@@ -1,8 +1,8 @@
 package nvb.dev.springsecuritydemo.config;
 
 import lombok.RequiredArgsConstructor;
-import nvb.dev.springsecuritydemo.model.Person;
-import nvb.dev.springsecuritydemo.repository.PersonRepository;
+import nvb.dev.springsecuritydemo.model.UserEntity;
+import nvb.dev.springsecuritydemo.repository.UserRepository;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,19 +18,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final PersonRepository personRepository;
+    private final UserRepository userRepository;
 
     @Override
     public @NonNull UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
-        Person person = personRepository
-                .findByEmail(username)
+        UserEntity user = userRepository
+                .findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(person.getRole()));
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
 
         return new User(
-                person.getEmail(),
-                person.getPassword(),
+                user.getUsername(),
+                user.getPassword(),
                 authorities
         );
     }
