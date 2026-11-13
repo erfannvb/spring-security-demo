@@ -37,3 +37,9 @@ CREATE TABLE person
 INSERT INTO person (email, password, role) VALUES ('user@example.com', '{noop}12345', 'read');
 INSERT INTO person (email, password, role) VALUES ('admin@example.com', '{bcrypt}$2a$12$pbYii3Zsteb5bOko0LnC2uUIhBqKhFLJF9auny0t4AQKOErB2KPva', 'read');
 
+CREATE TABLE users (
+                       id BIGSERIAL PRIMARY KEY,
+                       username VARCHAR(45) NOT NULL,
+                       password VARCHAR(200) NOT NULL,
+                       role VARCHAR(45) NOT NULL
+);
