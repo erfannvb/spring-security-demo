@@ -1,5 +1,6 @@
 package nvb.dev.springsecuritydemo.config;
 
+import nvb.dev.springsecuritydemo.exception.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -24,7 +25,7 @@ public class SecurityConfig {
                 requests.requestMatchers(SECURED_PATHS).authenticated()
                         .requestMatchers(NON_SECURED_PATHS).permitAll());
         http.formLogin(Customizer.withDefaults());
-        http.httpBasic(Customizer.withDefaults());
+        http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         return http.build();
     }
 
