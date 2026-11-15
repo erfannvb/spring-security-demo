@@ -19,6 +19,7 @@ public class SecurityProdConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+        http.redirectToHttps(Customizer.withDefaults());
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((requests) ->
                 requests.requestMatchers(SECURED_PATHS).authenticated()
