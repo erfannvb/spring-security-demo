@@ -1,5 +1,6 @@
 package nvb.dev.springsecuritydemo.config;
 
+import nvb.dev.springsecuritydemo.exception.CustomAccessDeniedHandler;
 import nvb.dev.springsecuritydemo.exception.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers(NON_SECURED_PATHS).permitAll());
         http.formLogin(Customizer.withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+        http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 
