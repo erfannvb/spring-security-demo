@@ -21,6 +21,8 @@ public class SecurityProdConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+        http.sessionManagement(ssc ->
+                ssc.maximumSessions(1).maxSessionsPreventsLogin(true));
         http.redirectToHttps(Customizer.withDefaults());
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((requests) ->
