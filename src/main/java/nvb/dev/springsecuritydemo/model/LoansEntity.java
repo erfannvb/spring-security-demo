@@ -1,12 +1,9 @@
 package nvb.dev.springsecuritydemo.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "loans")
@@ -18,14 +15,15 @@ import java.util.Date;
 public class LoansEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "loan_number")
-    private long loanNumber;
+    private int loanNumber;
 
     @Column(name = "customer_id")
     private long customerId;
 
     @Column(name = "start_dt")
-    private Date startDt;
+    private LocalDate startDt;
 
     @Column(name = "loan_type")
     private String loanType;
@@ -40,6 +38,6 @@ public class LoansEntity {
     private int outstandingAmount;
 
     @Column(name = "create_dt")
-    private Date createDt;
+    private LocalDate createDt;
 
 }

@@ -1,12 +1,9 @@
 package nvb.dev.springsecuritydemo.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "cards")
@@ -18,8 +15,9 @@ import java.util.Date;
 public class CardsEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "card_id")
-    private long cardId;
+    private int cardId;
 
     @Column(name = "customer_id")
     private long customerId;
@@ -40,6 +38,6 @@ public class CardsEntity {
     private int availableAmount;
 
     @Column(name = "create_dt")
-    private Date createDt;
+    private LocalDate createDt;
 
 }

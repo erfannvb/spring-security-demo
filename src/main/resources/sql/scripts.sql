@@ -16,6 +16,10 @@ CREATE TABLE auth_logs
 );
 
 
+-- =============================================
+-- ACCOUNTS
+-- =============================================
+
 CREATE TABLE accounts
 (
     customer_id    BIGINT       NOT NULL,
@@ -33,18 +37,13 @@ CREATE TABLE accounts
 CREATE INDEX idx_accounts_customer_id
     ON accounts (customer_id);
 
+INSERT INTO accounts (customer_id, account_number, account_type, branch_address, create_dt)
+VALUES (1, 1865764534, 'Savings', '123 Main Street, New York', CURRENT_DATE);
 
-INSERT INTO accounts (customer_id,
-                      account_number,
-                      account_type,
-                      branch_address,
-                      create_dt)
-VALUES (1,
-        1865764534,
-        'Savings',
-        '123 Main Street, New York',
-        CURRENT_DATE);
 
+-- =============================================
+-- ACCOUNT TRANSACTIONS
+-- =============================================
 
 CREATE TABLE account_transactions
 (
@@ -74,71 +73,26 @@ CREATE INDEX idx_transactions_customer_id
 CREATE INDEX idx_transactions_account_number
     ON account_transactions (account_number);
 
+INSERT INTO account_transactions (transaction_id, account_number, customer_id, transaction_dt,
+                                  transaction_summary, transaction_type, transaction_amt,
+                                  closing_balance, create_dt)
+VALUES (gen_random_uuid()::TEXT, 1865764534, 1, CURRENT_DATE - 7,
+        'Coffee Shop', 'Withdrawal', 30, 34500, CURRENT_DATE - 7),
+       (gen_random_uuid()::TEXT, 1865764534, 1, CURRENT_DATE - 6,
+        'Uber', 'Withdrawal', 100, 34400, CURRENT_DATE - 6),
+       (gen_random_uuid()::TEXT, 1865764534, 1, CURRENT_DATE - 5,
+        'Self Deposit', 'Deposit', 500, 34900, CURRENT_DATE - 5),
+       (gen_random_uuid()::TEXT, 1865764534, 1, CURRENT_DATE - 4,
+        'Ebay', 'Withdrawal', 600, 34300, CURRENT_DATE - 4),
+       (gen_random_uuid()::TEXT, 1865764534, 1, CURRENT_DATE - 2,
+        'OnlineTransfer', 'Deposit', 700, 35000, CURRENT_DATE - 2),
+       (gen_random_uuid()::TEXT, 1865764534, 1, CURRENT_DATE - 1,
+        'Amazon.com', 'Withdrawal', 100, 34900, CURRENT_DATE - 1);
 
-INSERT INTO account_transactions (transaction_id,
-                                  account_number,
-                                  customer_id,
-                                  transaction_dt,
-                                  transaction_summary,
-                                  transaction_type,
-                                  transaction_amt,
-                                  closing_balance,
-                                  create_dt)
-VALUES (gen_random_uuid()::TEXT,
-        1865764534,
-        1,
-        CURRENT_DATE - 7,
-        'Coffee Shop',
-        'Withdrawal',
-        30,
-        34500,
-        CURRENT_DATE - 7),
-       (gen_random_uuid()::TEXT,
-        1865764534,
-        1,
-        CURRENT_DATE - 6,
-        'Uber',
-        'Withdrawal',
-        100,
-        34400,
-        CURRENT_DATE - 6),
-       (gen_random_uuid()::TEXT,
-        1865764534,
-        1,
-        CURRENT_DATE - 5,
-        'Self Deposit',
-        'Deposit',
-        500,
-        34900,
-        CURRENT_DATE - 5),
-       (gen_random_uuid()::TEXT,
-        1865764534,
-        1,
-        CURRENT_DATE - 4,
-        'Ebay',
-        'Withdrawal',
-        600,
-        34300,
-        CURRENT_DATE - 4),
-       (gen_random_uuid()::TEXT,
-        1865764534,
-        1,
-        CURRENT_DATE - 2,
-        'OnlineTransfer',
-        'Deposit',
-        700,
-        35000,
-        CURRENT_DATE - 2),
-       (gen_random_uuid()::TEXT,
-        1865764534,
-        1,
-        CURRENT_DATE - 1,
-        'Amazon.com',
-        'Withdrawal',
-        100,
-        34900,
-        CURRENT_DATE - 1);
 
+-- =============================================
+-- LOANS
+-- =============================================
 
 CREATE TABLE loans
 (
@@ -160,43 +114,17 @@ CREATE TABLE loans
 CREATE INDEX idx_loans_customer_id
     ON loans (customer_id);
 
+INSERT INTO loans (customer_id, start_dt, loan_type, total_loan,
+                   amount_paid, outstanding_amount, create_dt)
+VALUES (1, '2020-10-13', 'Home', 200000, 50000, 150000, '2020-10-13'),
+       (1, '2020-06-06', 'Vehicle', 40000, 10000, 30000, '2020-06-06'),
+       (1, '2018-02-14', 'Home', 50000, 10000, 40000, '2018-02-14'),
+       (1, '2018-02-14', 'Personal', 10000, 3500, 6500, '2018-02-14');
 
-INSERT INTO loans (customer_id,
-                   start_dt,
-                   loan_type,
-                   total_loan,
-                   amount_paid,
-                   outstanding_amount,
-                   create_dt)
-VALUES (1,
-        '2020-10-13',
-        'Home',
-        200000,
-        50000,
-        150000,
-        '2020-10-13'),
-       (1,
-        '2020-06-06',
-        'Vehicle',
-        40000,
-        10000,
-        30000,
-        '2020-06-06'),
-       (1,
-        '2018-02-14',
-        'Home',
-        50000,
-        10000,
-        40000,
-        '2018-02-14'),
-       (1,
-        '2018-02-14',
-        'Personal',
-        10000,
-        3500,
-        6500,
-        '2018-02-14');
 
+-- =============================================
+-- CARDS
+-- =============================================
 
 CREATE TABLE cards
 (
@@ -218,36 +146,16 @@ CREATE TABLE cards
 CREATE INDEX idx_cards_customer_id
     ON cards (customer_id);
 
+INSERT INTO cards (card_number, customer_id, card_type, total_limit,
+                   amount_used, available_amount, create_dt)
+VALUES ('4565XXXX4656', 1, 'Credit', 10000, 500, 9500, CURRENT_DATE),
+       ('3455XXXX8673', 1, 'Credit', 7500, 600, 6900, CURRENT_DATE),
+       ('2359XXXX9346', 1, 'Credit', 20000, 4000, 16000, CURRENT_DATE);
 
-INSERT INTO cards (card_number,
-                   customer_id,
-                   card_type,
-                   total_limit,
-                   amount_used,
-                   available_amount,
-                   create_dt)
-VALUES ('4565XXXX4656',
-        1,
-        'Credit',
-        10000,
-        500,
-        9500,
-        CURRENT_DATE),
-       ('3455XXXX8673',
-        1,
-        'Credit',
-        7500,
-        600,
-        6900,
-        CURRENT_DATE),
-       ('2359XXXX9346',
-        1,
-        'Credit',
-        20000,
-        4000,
-        16000,
-        CURRENT_DATE);
 
+-- =============================================
+-- NOTICE DETAILS
+-- =============================================
 
 CREATE TABLE notice_details
 (
@@ -261,50 +169,31 @@ CREATE TABLE notice_details
     PRIMARY KEY (notice_id)
 );
 
-
-INSERT INTO notice_details (notice_summary,
-                            notice_details,
-                            notic_beg_dt,
-                            notic_end_dt,
-                            create_dt,
-                            update_dt)
+INSERT INTO notice_details (notice_summary, notice_details, notice_beg_dt,
+                            notice_end_dt, create_dt, update_dt)
 VALUES ('Home Loan Interest rates reduced',
-        'Home loan interest rates are reduced as per the goverment guidelines. The updated rates will be effective immediately',
-        CURRENT_DATE - 30,
-        CURRENT_DATE + 30,
-        CURRENT_DATE,
-        NULL),
+        'Home loan interest rates are reduced as per the government guidelines. The updated rates will be effective immediately',
+        CURRENT_DATE - 30, CURRENT_DATE + 30, CURRENT_DATE, NULL),
        ('Net Banking Offers',
         'Customers who will opt for Internet banking while opening a saving account will get a $50 amazon voucher',
-        CURRENT_DATE - 30,
-        CURRENT_DATE + 30,
-        CURRENT_DATE,
-        NULL),
+        CURRENT_DATE - 30, CURRENT_DATE + 30, CURRENT_DATE, NULL),
        ('Mobile App Downtime',
         'The mobile application of the EazyBank will be down from 2AM-5AM on 12/05/2020 due to maintenance activities',
-        CURRENT_DATE - 30,
-        CURRENT_DATE + 30,
-        CURRENT_DATE,
-        NULL),
+        CURRENT_DATE - 30, CURRENT_DATE + 30, CURRENT_DATE, NULL),
        ('E Auction notice',
-        'There will be a e-auction on 12/08/2020 on the Bank website for all the stubborn arrears.Interested parties can participate in the e-auction',
-        CURRENT_DATE - 30,
-        CURRENT_DATE + 30,
-        CURRENT_DATE,
-        NULL),
+        'There will be an e-auction on 12/08/2020 on the Bank website for all the stubborn arrears. Interested parties can participate in the e-auction',
+        CURRENT_DATE - 30, CURRENT_DATE + 30, CURRENT_DATE, NULL),
        ('Launch of Millennia Cards',
         'Millennia Credit Cards are launched for the premium customers of EazyBank. With these cards, you will get 5% cashback for each purchase',
-        CURRENT_DATE - 30,
-        CURRENT_DATE + 30,
-        CURRENT_DATE,
-        NULL),
+        CURRENT_DATE - 30, CURRENT_DATE + 30, CURRENT_DATE, NULL),
        ('COVID-19 Insurance',
         'EazyBank launched an insurance policy which will cover COVID-19 expenses. Please reach out to the branch for more details',
-        CURRENT_DATE - 30,
-        CURRENT_DATE + 30,
-        CURRENT_DATE,
-        NULL);
+        CURRENT_DATE - 30, CURRENT_DATE + 30, CURRENT_DATE, NULL);
 
+
+-- =============================================
+-- CONTACT MESSAGES
+-- =============================================
 
 CREATE TABLE contact_messages
 (
@@ -316,6 +205,5 @@ CREATE TABLE contact_messages
     create_dt     DATE DEFAULT NULL,
     PRIMARY KEY (contact_id)
 );
-
 
 

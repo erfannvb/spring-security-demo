@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "contact_messages")
@@ -27,11 +27,13 @@ public class ContactEntity {
     @Column(name = "contact_email")
     private String contactEmail;
 
+    @Column(name = "subject")
     private String subject;
 
+    @Column(name = "message")
     private String message;
 
     @Column(name = "create_dt")
-    private Date createDt;
+    private LocalDate createDt;
 
 }

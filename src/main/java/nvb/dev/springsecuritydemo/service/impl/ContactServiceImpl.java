@@ -1,13 +1,12 @@
 package nvb.dev.springsecuritydemo.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import nvb.dev.springsecuritydemo.model.CardsEntity;
 import nvb.dev.springsecuritydemo.model.ContactEntity;
 import nvb.dev.springsecuritydemo.repository.ContactRepository;
 import nvb.dev.springsecuritydemo.service.ContactService;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Random;
 
 @Service
@@ -19,7 +18,7 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public ContactEntity saveContactInquiryDetails(ContactEntity contact) {
         contact.setContactId(getServiceReqNumber());
-        contact.setCreateDt(new Date(System.currentTimeMillis()));
+        contact.setCreateDt(LocalDate.now());
         return contactRepository.save(contact);
     }
 

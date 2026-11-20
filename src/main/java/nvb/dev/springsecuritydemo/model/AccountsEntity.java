@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "accounts")
@@ -22,7 +22,7 @@ public class AccountsEntity {
 
     @Id
     @Column(name = "account_number")
-    private long accountNumber;
+    private int accountNumber;
 
     @Column(name = "account_type")
     private String accountType;
@@ -31,6 +31,6 @@ public class AccountsEntity {
     private String branchAddress;
 
     @Column(name = "create_dt")
-    private Date createDt;
+    private LocalDate createDt;
 
 }

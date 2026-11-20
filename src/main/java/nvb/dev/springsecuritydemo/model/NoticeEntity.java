@@ -1,13 +1,10 @@
 package nvb.dev.springsecuritydemo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "notice_details")
@@ -19,8 +16,9 @@ import java.util.Date;
 public class NoticeEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notice_id")
-    private long noticeId;
+    private int noticeId;
 
     @Column(name = "notice_summary")
     private String noticeSummary;
@@ -28,18 +26,18 @@ public class NoticeEntity {
     @Column(name = "notice_details")
     private String noticeDetails;
 
-    @Column(name = "notic_beg_dt")
-    private Date noticeBegDt;
+    @Column(name = "notice_beg_dt")
+    private LocalDate noticeBegDt;
 
-    @Column(name = "notic_end_dt")
-    private Date noticeEndDt;
+    @Column(name = "notice_end_dt")
+    private LocalDate noticeEndDt;
 
     @JsonIgnore
     @Column(name = "create_dt")
-    private Date createDt;
+    private LocalDate createDt;
 
     @JsonIgnore
     @Column(name = "update_dt")
-    private Date updateDt;
+    private LocalDate updateDt;
 
 }
