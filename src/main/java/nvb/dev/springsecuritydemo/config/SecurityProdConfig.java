@@ -1,7 +1,9 @@
 package nvb.dev.springsecuritydemo.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nvb.dev.springsecuritydemo.exception.CustomAccessDeniedHandler;
 import nvb.dev.springsecuritydemo.exception.CustomBasicAuthenticationEntryPoint;
+import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -11,6 +13,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.time.Duration;
+import java.util.Collections;
 
 @Configuration
 @Profile(value = "prod")
@@ -21,6 +28,18 @@ public class SecurityProdConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+        http.cors(corsConfig -> corsConfig.configurationSource(new CorsConfigurationSource() {
+            @Override
+            public @NonNull CorsConfiguration getCorsConfiguration(@NonNull HttpServletRequest request) {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+                configuration.setAllowedHeaders(Collections.singletonList("*"));
+                configuration.setAllowedHeaders(Collections.singletonList("*"));
+                configuration.setAllowCredentials(true);
+                configuration.setMaxAge(Duration.ofSeconds(3600L));
+                return configuration;
+            }
+        }));
         http.sessionManagement(ssc ->
                 ssc.maximumSessions(1).maxSessionsPreventsLogin(true));
         http.redirectToHttps(Customizer.withDefaults());
