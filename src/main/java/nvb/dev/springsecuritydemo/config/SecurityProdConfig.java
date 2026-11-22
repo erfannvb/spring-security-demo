@@ -27,14 +27,19 @@ public class SecurityProdConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()));
+
         http.sessionManagement(ssc ->
                 ssc.maximumSessions(1).maxSessionsPreventsLogin(true));
+
         http.redirectToHttps(Customizer.withDefaults());
         http.csrf(AbstractHttpConfigurer::disable);
+
         http.authorizeHttpRequests((requests) ->
                 requests.requestMatchers(SECURED_PATHS).authenticated()
                         .requestMatchers(NON_SECURED_PATHS).permitAll());
+
         http.formLogin(Customizer.withDefaults());
+
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
