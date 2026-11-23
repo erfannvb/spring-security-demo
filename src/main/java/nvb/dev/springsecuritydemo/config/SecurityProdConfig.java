@@ -2,15 +2,19 @@ package nvb.dev.springsecuritydemo.config;
 
 import nvb.dev.springsecuritydemo.exception.CustomAccessDeniedHandler;
 import nvb.dev.springsecuritydemo.exception.CustomBasicAuthenticationEntryPoint;
+import nvb.dev.springsecuritydemo.filter.CsrfCookieFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,16 +27,30 @@ public class SecurityProdConfig {
 
     private static final String[] NON_SECURED_PATHS = new String[]{"/notices", "/contact", "/error", "/api/v1/user/**"};
     private static final String[] SECURED_PATHS = new String[]{"/myAccount", "/myBalance", "/myCard", "/myLoan"};
+    private static final String[] CSRF_IGNORING_URLS = new String[]{"/contact", "/api/v1/user/**"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+        CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
+
         http.cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()));
 
-        http.sessionManagement(ssc ->
-                ssc.maximumSessions(1).maxSessionsPreventsLogin(true));
+        http.securityContext(contextConfig ->
+                contextConfig.requireExplicitSave(false));
+
+        http.sessionManagement(sessionConfig -> sessionConfig
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(true));
 
         http.redirectToHttps(Customizer.withDefaults());
-        http.csrf(AbstractHttpConfigurer::disable);
+
+        http.csrf(csrfConfig ->
+                csrfConfig
+                        .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+                        .ignoringRequestMatchers(CSRF_IGNORING_URLS)
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+        http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
 
         http.authorizeHttpRequests((requests) ->
                 requests.requestMatchers(SECURED_PATHS).authenticated()
