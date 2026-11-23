@@ -27,7 +27,7 @@ public class SecurityConfig {
 
     private static final String[] NON_SECURED_PATHS = new String[]{"/notices", "/contact", "/error", "/api/v1/user/**"};
     private static final String[] SECURED_PATHS = new String[]{"/myAccount", "/myBalance", "/myCard", "/myLoan"};
-    private static final String[] CSRF_IGNORING_URLS = new String[]{"/contact", "/register"};
+    private static final String[] CSRF_IGNORING_URLS = new String[]{"/contact", "/api/v1/user/**"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
