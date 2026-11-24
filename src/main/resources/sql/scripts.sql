@@ -210,7 +210,7 @@ CREATE TABLE contact_messages
 CREATE TABLE authorities
 (
     id      BIGSERIAL PRIMARY KEY,
-    user_id INTEGER     NOT NULL,
+    user_id BIGINT      NOT NULL,
     name    VARCHAR(50) NOT NULL,
     CONSTRAINT auth_user_fk
         FOREIGN KEY (user_id)
