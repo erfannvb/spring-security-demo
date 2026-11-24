@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import nvb.dev.springsecuritydemo.model.UserEntity;
 import nvb.dev.springsecuritydemo.repository.UserRepository;
 import org.jspecify.annotations.NonNull;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +25,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
+        List<SimpleGrantedAuthority> authorities = user.getAuthorities()
+                .stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getName()))
+                .toList();
 
         return new User(
                 user.getUsername(),
