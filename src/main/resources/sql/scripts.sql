@@ -207,3 +207,26 @@ CREATE TABLE contact_messages
 );
 
 
+CREATE TABLE authorities
+(
+    id      BIGSERIAL PRIMARY KEY,
+    user_id INTEGER     NOT NULL,
+    name    VARCHAR(50) NOT NULL,
+    CONSTRAINT auth_user_fk
+        FOREIGN KEY (user_id)
+            REFERENCES users (id)
+);
+
+INSERT INTO authorities (user_id, name)
+VALUES (1, 'VIEWACCOUNT');
+
+INSERT INTO authorities (user_id, name)
+VALUES (1, 'VIEWCARDS');
+
+INSERT INTO authorities (user_id, name)
+VALUES (1, 'VIEWLOANS');
+
+INSERT INTO authorities (user_id, name)
+VALUES (1, 'VIEWBALANCE');
+
+
