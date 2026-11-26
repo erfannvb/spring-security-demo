@@ -20,23 +20,27 @@ public class RequestValidationFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        String header = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION).trim();
-        if (StringUtils.startsWithIgnoreCase(header, "Basic ")) {
-            byte[] base64Token = header.substring(6).getBytes(StandardCharsets.UTF_8);
-            byte[] decodedToken = Base64.getDecoder().decode(base64Token);
+        String header = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header != null) {
+            header = header.trim();
+            if (StringUtils.startsWithIgnoreCase(header, "Basic ")) {
+                byte[] base64Token = header.substring(6).getBytes(StandardCharsets.UTF_8);
+                byte[] decodedToken = Base64.getDecoder().decode(base64Token);
 
-            String token = new String(decodedToken, StandardCharsets.UTF_8);
+                String token = new String(decodedToken, StandardCharsets.UTF_8);
 
-            int delimiter = token.indexOf(":");
-            if (delimiter == -1)
-                throw new BadCredentialsException("Invalid basic authentication token.");
+                int delimiter = token.indexOf(":");
+                if (delimiter == -1)
+                    throw new BadCredentialsException("Invalid basic authentication token.");
 
-            String username = token.substring(0, delimiter);
-            if (username.toLowerCase().contains("test")) {
-                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return;
+                String username = token.substring(0, delimiter);
+                if (username.toLowerCase().contains("test")) {
+                    httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
             }
         }
+
 
         chain.doFilter(request, response);
     }
