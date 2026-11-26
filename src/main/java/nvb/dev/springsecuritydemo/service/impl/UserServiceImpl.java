@@ -3,9 +3,11 @@ package nvb.dev.springsecuritydemo.service.impl;
 import lombok.RequiredArgsConstructor;
 import nvb.dev.springsecuritydemo.dto.CreateUserRequest;
 import nvb.dev.springsecuritydemo.dto.CreateUserResponse;
+import nvb.dev.springsecuritydemo.dto.UserinfoDto;
 import nvb.dev.springsecuritydemo.model.UserEntity;
 import nvb.dev.springsecuritydemo.repository.UserRepository;
 import nvb.dev.springsecuritydemo.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +30,20 @@ public class UserServiceImpl implements UserService {
 
         UserEntity savedUser = userRepository.save(user);
         return new CreateUserResponse(savedUser.getUsername(), savedUser.getRole());
+    }
+
+    @Override
+    public UserinfoDto getUserInfo(Authentication authentication) {
+        return userRepository.findByUsername(authentication.getName())
+                .map(this::mapToUserInfo)
+                .orElse(null);
+    }
+
+    private UserinfoDto mapToUserInfo(UserEntity user) {
+        return new UserinfoDto(
+                user.getId(),
+                user.getUsername(),
+                user.getRole()
+        );
     }
 }
