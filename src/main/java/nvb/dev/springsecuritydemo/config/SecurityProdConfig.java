@@ -26,7 +26,7 @@ import java.util.Collections;
 public class SecurityProdConfig {
 
     private static final String[] NON_SECURED_PATHS = new String[]{"/notices", "/contact", "/error", "/api/v1/user/**"};
-    private static final String[] SECURED_PATHS = new String[]{"/myAccount", "/myBalance", "/myCard", "/myLoan"};
+//    private static final String[] SECURED_PATHS = new String[]{"/myAccount", "/myBalance", "/myCard", "/myLoan"};
     private static final String[] CSRF_IGNORING_URLS = new String[]{"/contact", "/api/v1/user/**"};
 
     @Bean
@@ -52,9 +52,13 @@ public class SecurityProdConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
         http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
 
-        http.authorizeHttpRequests((requests) ->
-                requests.requestMatchers(SECURED_PATHS).authenticated()
-                        .requestMatchers(NON_SECURED_PATHS).permitAll());
+        http.authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
+                .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
+                .requestMatchers("/myLoans").hasAuthority("VIEWLOANS")
+                .requestMatchers("/myCards").hasAuthority("VIEWCARDS")
+                .requestMatchers("/api/v1/user/**").authenticated()
+                .requestMatchers(NON_SECURED_PATHS).permitAll());
 
         http.formLogin(Customizer.withDefaults());
 
@@ -66,7 +70,7 @@ public class SecurityProdConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+        configuration.setAllowedOrigins(Collections.singletonList("https://localhost:4200"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowCredentials(true);
