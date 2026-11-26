@@ -26,7 +26,7 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private static final String[] NON_SECURED_PATHS = new String[]{"/notices", "/contact", "/error", "/api/v1/user/**"};
-//    private static final String[] SECURED_PATHS = new String[]{"/myAccount", "/myBalance", "/myCard", "/myLoan"};
+    //    private static final String[] SECURED_PATHS = new String[]{"/myAccount", "/myBalance", "/myCard", "/myLoan"};
     private static final String[] CSRF_IGNORING_URLS = new String[]{"/contact", "/api/v1/user/**"};
 
     @Bean
@@ -49,10 +49,10 @@ public class SecurityConfig {
         http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
 
         http.authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
-                .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
-                .requestMatchers("/myLoans").hasAuthority("VIEWLOANS")
-                .requestMatchers("/myCards").hasAuthority("VIEWCARDS")
+                .requestMatchers("/myAccount").hasRole("USER")
+                .requestMatchers("/myBalance").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/myLoans").hasRole("USER")
+                .requestMatchers("/myCards").hasRole("USER")
                 .requestMatchers("/api/v1/user/**").authenticated()
                 .requestMatchers(NON_SECURED_PATHS).permitAll());
 
