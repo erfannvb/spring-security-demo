@@ -3,6 +3,7 @@ package nvb.dev.springsecuritydemo.config;
 import nvb.dev.springsecuritydemo.exception.CustomAccessDeniedHandler;
 import nvb.dev.springsecuritydemo.exception.CustomBasicAuthenticationEntryPoint;
 import nvb.dev.springsecuritydemo.filter.CsrfCookieFilter;
+import nvb.dev.springsecuritydemo.filter.LoggingFilter;
 import nvb.dev.springsecuritydemo.filter.RequestValidationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,6 +51,7 @@ public class SecurityConfig {
 
         http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
         http.addFilterBefore(new RequestValidationFilter(), BasicAuthenticationFilter.class);
+        http.addFilterAfter(new LoggingFilter(), BasicAuthenticationFilter.class);
 
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/myAccount").hasRole("USER")
