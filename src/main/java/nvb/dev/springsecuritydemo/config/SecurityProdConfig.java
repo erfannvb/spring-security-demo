@@ -2,9 +2,7 @@ package nvb.dev.springsecuritydemo.config;
 
 import nvb.dev.springsecuritydemo.exception.CustomAccessDeniedHandler;
 import nvb.dev.springsecuritydemo.exception.CustomBasicAuthenticationEntryPoint;
-import nvb.dev.springsecuritydemo.filter.CsrfCookieFilter;
-import nvb.dev.springsecuritydemo.filter.LoggingFilter;
-import nvb.dev.springsecuritydemo.filter.RequestValidationFilter;
+import nvb.dev.springsecuritydemo.filter.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -37,11 +35,8 @@ public class SecurityProdConfig {
 
         http.cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()));
 
-        http.securityContext(contextConfig ->
-                contextConfig.requireExplicitSave(false));
-
         http.sessionManagement(sessionConfig -> sessionConfig
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(true));
 
@@ -56,6 +51,8 @@ public class SecurityProdConfig {
         http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
         http.addFilterBefore(new RequestValidationFilter(), BasicAuthenticationFilter.class);
         http.addFilterAfter(new LoggingFilter(), BasicAuthenticationFilter.class);
+        http.addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new JwtTokenValidatorFilter(), BasicAuthenticationFilter.class);
 
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/myAccount").hasRole("USER")
@@ -78,6 +75,7 @@ public class SecurityProdConfig {
         configuration.setAllowedOrigins(Collections.singletonList("https://localhost:4200"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowedMethods(Collections.singletonList("*"));
+        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
